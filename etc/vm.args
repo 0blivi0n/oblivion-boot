@@ -1,5 +1,5 @@
 ## Name of the node
--name oblivion@uiqui.net
+-name oblivion
 
 ## Cookie for distributed erlang
 -setcookie 0blv0n
