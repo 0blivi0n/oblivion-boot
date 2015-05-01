@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Use to run script with a specific user
+RUNNER_USER=
+# Use this VAR to specify a specific erlang installation (if set must terminate with "/")
+ERL_DIR=
+
 SCRIPT=`basename $0`
 SCRIPT_DIR=$(cd ${0%/*} && pwd)
 BASE_DIR=${SCRIPT_DIR%/*}
@@ -10,11 +15,6 @@ EBIN_DIR=${BASE_DIR}/ebin
 LIB_DIR=${BASE_DIR}/lib
 
 PIPE_DIR=/tmp/${BASE_DIR}/
-
-# Use to run script with a specific user
-RUNNER_USER=
-# Use this VAR to specify a specific erlang installation (if set must terminate with "/")
-ERL_DIR=
 
 if [ ! -z "${RUNNER_USER}" ] && [ `whoami` != "${RUNNER_USER}" ]; then
     exec sudo -u ${RUNNER_USER} -i $0 $@
@@ -27,12 +27,40 @@ mkdir -p ${LOG_DIR}
 VMARGS_PATH="${ETC_DIR}/vm.args"
 CONFIG_PATH="${ETC_DIR}/oblivion.config"
 
+NAME_ARG=`egrep '^-s?name' ${VMARGS_PATH}`
+if [ -z "${NAME_ARG}" ]; then
+    echo "vm.args needs to have either -name or -sname parameter."
+    exit 1
+fi
+
+COOKIE_ARG=`grep '^-setcookie' ${VMARGS_PATH}`
+if [ -z "${COOKIE_ARG}" ]; then
+    echo "vm.args needs to have a -setcookie parameter."
+    exit 1
+fi
+
 ERL_APP=${ERL_DIR}erl
 RUN_ERL_APP=${ERL_DIR}run_erl
 TO_ERL_APP=${ERL_DIR}to_erl
+ESCRIPT_APP=${ERL_DIR}escript
+
+if [ -z "${ERL_DIR}" ]; then
+	ERL_APP=`which erl`
+	RUN_ERL_APP=`which run_erl`
+	TO_ERL_APP=`which to_erl`
+	ESCRIPT_APP=`which escript`
+fi
+
+NODETOOL="${ESCRIPT_APP} ${BASE_DIR}/bin/nodetool ${NAME_ARG} ${COOKIE_ARG}"
 
 case "$1" in
     start)
+        RES=`${NODETOOL} ping`
+        if [ "${RES}" = "pong" ]; then
+            echo "Server is already running!"
+            exit 1
+        fi
+        
         HEART_COMMAND="${BASE_DIR}/bin/${SCRIPT} start"
         export HEART_COMMAND
         
@@ -41,11 +69,33 @@ case "$1" in
         
         ${RUN_ERL_APP} -daemon ${PIPE_DIR} ${LOG_DIR} "${CMD}" 2>&1
         ;;
+    stop)
+        ${NODETOOL} stop
+        ES=$?
+        if [ "${ES}" -ne 0 ]; then
+            exit ${ES}
+        fi
+    	;;    
+    status)
+        RES=`${NODETOOL} ping`
+        if [ "${RES}" = "pong" ]; then
+            echo "Server is running!"
+        else
+       		echo "Server is not running!"
+        fi
+        ;;    
     attach)
+        ${NODETOOL} ping
+        ES=$?
+        if [ "${ES}" -ne 0 ]; then
+            echo "Server is not running!"
+            exit ${ES}
+        fi
+            
     	${TO_ERL_APP} ${PIPE_DIR}
     	;;
     *)
-        echo "Usage: ${SCRIPT} {start|attach}"
+        echo "Usage: ${SCRIPT} {start|stop|status|attach}"
         exit 1
         ;;
 esac

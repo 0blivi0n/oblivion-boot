@@ -16,6 +16,7 @@
 -module(oblivion_boot).
 
 -define(APP_LIST, [
+		sasl,
 		syntax_tools,
 		compiler,
 		goldrush,
@@ -36,11 +37,9 @@
 %% ====================================================================
 %% API functions
 %% ====================================================================
--export([stop/0, start/0]).
+-export([start/0]).
 
 start() -> start(?APP_LIST).
-
-stop() -> stop(lists:reverse(?APP_LIST)).
 
 %% ====================================================================
 %% Internal functions
@@ -50,8 +49,3 @@ start([]) ->  ok;
 start([App|T]) -> 
 	ok = application:start(App),
 	start(T).
-
-stop([]) ->  ok;
-stop([App|T]) -> 
-	ok = application:stop(App),
-	stop(T).
