@@ -81,15 +81,14 @@ case "$1" in
         if [ "${RES}" = "pong" ]; then
             echo "Server is running!"
         else
-       		echo "Server is not running!"
+            echo "Server is not running!"
         fi
         ;;    
     attach)
-        ${NODETOOL} ping
-        ES=$?
-        if [ "${ES}" -ne 0 ]; then
+        RES=`${NODETOOL} ping`
+        if [ "${RES}" != "pong" ]; then
             echo "Server is not running!"
-            exit ${ES}
+            exit 1
         fi
             
     	${TO_ERL_APP} ${PIPE_DIR}
