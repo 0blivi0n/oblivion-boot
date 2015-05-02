@@ -2,17 +2,20 @@
 
 VERSION=0.5.0
 
+mkdir /tmp/oblivion
+
+cp -R * /tmp/oblivion
+
+PWD_DIR=`pwd`
+cd /tmp/oblivion
+
 rm log/*
 rm etc/persistence.conf
 
-mkdir /tmp/oblivion
+cd ..
 
-cp -R bin/ ebin/ lib/*/ebin/ lib/*/include/ lib/*/priv/ etc/ log /tmp/oblivion
+zip -r $PWD_DIR/oblivion-cache_${VERSION}.zip oblivion/bin oblivion/ebin oblivion/etc oblivion/log oblivion/lib/*/ebin oblivion/lib/*/include oblivion/lib/*/priv
 
-PWD_DIR=`pwd`
-cd /tmp
-
-zip -r $PWD_DIR/oblivion-cache_${VERSION}.zip oblivion
 rm -rf oblivion
 
 cd $PWD_DIR
