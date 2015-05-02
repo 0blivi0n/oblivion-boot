@@ -9,8 +9,8 @@ cp -R * /tmp/oblivion
 PWD_DIR=`pwd`
 cd /tmp/oblivion
 
-rm log/*
-rm etc/persistence.conf
+rm -f log/*
+rm -f etc/persistence.conf
 
 cd ..
 
