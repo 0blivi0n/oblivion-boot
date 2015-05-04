@@ -70,11 +70,30 @@ case "$1" in
         ${RUN_ERL_APP} -daemon ${PIPE_DIR} ${LOG_DIR} "${CMD}" 2>&1
         ;;
     stop)
+        case `uname -s` in
+            Linux|Darwin|FreeBSD|DragonFly|NetBSD|OpenBSD)
+                PID=`ps ax -o pid= -o command=|\
+                    grep "${BASE_DIR}/.*/[b]eam"|awk '{print $1}'`
+                ;;
+            SunOS)
+                PID=`ps -ef -o pid= -o args=|\
+                    grep "${BASE_DIR}/.*/[b]eam"|awk '{print $1}'`
+                ;;
+            CYGWIN*)
+                PID=`ps -efW|grep "${BASE_DIR}/.*/[b]eam"|awk '{print $2}'`
+                ;;
+        esac
+   
         ${NODETOOL} stop
         ES=$?
         if [ "${ES}" -ne 0 ]; then
             exit ${ES}
         fi
+        
+        while `kill -0 ${PID} 2>/dev/null`;
+        do
+            sleep 1
+        done
     	;;    
     status)
         RES=`${NODETOOL} ping`
