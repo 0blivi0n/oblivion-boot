@@ -1,7 +1,10 @@
-## Name of the node
--name oblivion
+## Each node in the system must have a unique name.  A name can be short
+## (specified using -sname) or it can by fully qualified (-name).  There can be
+## no communication between nodes running with the -sname flag and those running
+## with the -name flag.
+-sname oblivion
 
-## Cookie for distributed erlang
+## All nodes must share the same magic cookie for distributed Erlang to work.
 -setcookie 0blv0n
 
 ## Heartbeat management; auto-restarts VM if it dies or becomes unresponsive
@@ -13,7 +16,7 @@
 +A 16
 
 ## Increase number of concurrent ports/sockets
-##-env ERL_MAX_PORTS 4096
+#-env ERL_MAX_PORTS 4096
 
 ## Tweak GC to run more often
 -env ERL_FULLSWEEP_AFTER 10
