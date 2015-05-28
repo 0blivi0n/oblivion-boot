@@ -28,7 +28,7 @@
 		columbo,
 		cclock,
 		gibreel,
-		jsx,
+		jsondoc,
 		erlydtl,
 		kill_bill,
 		oblivion
