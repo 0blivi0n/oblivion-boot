@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION=0.5.0
+VERSION=`./vsn.escript src/oblivion_boot.app.src`
 
 mkdir /tmp/oblivion
 
