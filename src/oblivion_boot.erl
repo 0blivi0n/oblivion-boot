@@ -31,6 +31,7 @@
 		jsondoc,
 		erlydtl,
 		kill_bill,
+		ecall,
 		oblivion
 		]).
 
