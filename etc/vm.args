@@ -15,11 +15,14 @@
 +K true
 +A 16
 
-## max process numbers
-#+P 10000
+## Max process numbers
+#+P 32768
 
-## Increase number of concurrent ports/sockets
+## Max number of atoms
+#+t 1048576
+
+## Max number of concurrent ports/sockets
 #-env ERL_MAX_PORTS 4096
 
-## Tweak GC to run more often
-#-env ERL_FULLSWEEP_AFTER 10
+## Max number od ets tables
+#-env ERL_MAX_ETS_TABLES 1400
