@@ -10,7 +10,7 @@ PWD_DIR=`pwd`
 cd /tmp/oblivion
 
 rm -f log/*
-rm -f etc/persistence.conf
+rm -f etc/persistence.data
 
 cd ..
 
