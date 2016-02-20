@@ -1,4 +1,4 @@
-%% Copyright 2014 Joaquim Rocha <jrocha@gmailbox.org>
+%% Copyright 2014-16 Joaquim Rocha <jrocha@gmailbox.org>
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@
 		cowboy,
 		narciso,
 		worker_pool,
+		event_broker,
 		async,
 		columbo,
 		cclock,
